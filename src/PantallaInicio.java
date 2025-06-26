@@ -3,42 +3,48 @@ import java.awt.*;
 
 public class PantallaInicio extends JFrame {
 
+    // PanelConImagen declarado afuera de PantallaInicio para que compile bien
+    public static class PanelConImagen extends JPanel {
+        private Image imagenFondo;
+
+        public PanelConImagen(String rutaImagen) {
+            ImageIcon icon = new ImageIcon(rutaImagen);
+            imagenFondo = icon.getImage();
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
+
     public PantallaInicio() {
         setTitle("Ahorcado de Stitch - Bienvenido");
         setSize(520, 420);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        setLayout(new BorderLayout());
 
-        // Panel superior con imagen y título
-        JPanel panelSuperior = new JPanel();
-        panelSuperior.setBackground(new Color(30, 60, 90)); // Azul oscuro tipo Stitch
-        panelSuperior.setLayout(new BorderLayout());
+        // Creamos el panel fondo que ocupa todo el JFrame
+        PanelConImagen fondo = new PanelConImagen("imagenes/fondoAhorcado.png");
+        fondo.setLayout(new BorderLayout(0, 0));
+        setContentPane(fondo);
 
-        // Imagen decorativa
-        JLabel imagen = new JLabel();
-        ImageIcon icon = new ImageIcon("imagenes/stitch 1.png"); // Revisa que la ruta sea correcta
-        Image scaled = icon.getImage().getScaledInstance(140, 140, Image.SCALE_SMOOTH);
-        imagen.setIcon(new ImageIcon(scaled));
-        imagen.setHorizontalAlignment(SwingConstants.CENTER);
-        imagen.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        panelSuperior.add(imagen, BorderLayout.CENTER);
+        // Logo arriba
+        ImageIcon logoIcon = new ImageIcon("imagenes/AhorcadoLOGO.png");
+        Image logoEscalada = logoIcon.getImage().getScaledInstance(250, 200, Image.SCALE_SMOOTH);
+        JLabel logoLabel = new JLabel(new ImageIcon(logoEscalada));
+        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        logoLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
+        fondo.add(logoLabel, BorderLayout.NORTH);
 
-        // Título en la parte inferior del panel superior
-        JLabel titulo = new JLabel("AHORCADO DE STITCH", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial Black", Font.BOLD, 28));
-        titulo.setForeground(new Color(255, 230, 150)); // Amarillo claro para contraste
-        titulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
-        panelSuperior.add(titulo, BorderLayout.SOUTH);
-
-        add(panelSuperior, BorderLayout.NORTH);
-
-        // Panel central con botones
-        JPanel centro = new JPanel();
-        centro.setBackground(new Color(200, 230, 255)); // Azul suave
-        centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
-        centro.setBorder(BorderFactory.createEmptyBorder(30, 50, 40, 50));
+        // Panel para botones abajo
+        JPanel panelBotones = new JPanel();
+        panelBotones.setOpaque(false);  // transparente para que se vea el fondo
+        panelBotones.setLayout(new BoxLayout(panelBotones, BoxLayout.Y_AXIS));
+        panelBotones.setBorder(BorderFactory.createEmptyBorder(30, 50, 40, 50));
 
         Font btnFont = new Font("Arial", Font.BOLD, 20);
 
@@ -60,7 +66,7 @@ public class PantallaInicio extends JFrame {
         btnLogin.setBorder(BorderFactory.createLineBorder(new Color(255, 230, 150), 2));
         btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Añadir efectos hover simples (opcional)
+        // Efectos hover
         btnRegistro.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnRegistro.setBackground(new Color(255, 230, 150));
@@ -92,15 +98,16 @@ public class PantallaInicio extends JFrame {
             setVisible(false);
         });
 
-        centro.add(btnRegistro);
-        centro.add(Box.createVerticalStrut(30));
-        centro.add(btnLogin);
+        panelBotones.add(btnRegistro);
+        panelBotones.add(Box.createVerticalStrut(30));
+        panelBotones.add(btnLogin);
 
-        add(centro, BorderLayout.CENTER);
+        fondo.add(panelBotones, BorderLayout.SOUTH);
 
-        // Fondo general claro con un borde elegante
+        // Borde elegante alrededor de todo
         ((JComponent) getContentPane()).setBorder(BorderFactory.createLineBorder(new Color(30, 60, 90), 3));
 
         setVisible(true);
     }
 }
+

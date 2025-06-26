@@ -7,6 +7,23 @@ public class RegistroUsuario extends JFrame {
 
     private PantallaInicio pantallaInicio;
 
+    // Panel con imagen de fondo
+    public static class PanelConImagen extends JPanel {
+        private Image imagenFondo;
+
+        public PanelConImagen(String rutaImagen) {
+            ImageIcon icon = new ImageIcon(rutaImagen);
+            imagenFondo = icon.getImage();
+            setOpaque(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(imagenFondo, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
+
     public RegistroUsuario(PantallaInicio pantallaInicio) {
         this.pantallaInicio = pantallaInicio;
 
@@ -15,32 +32,38 @@ public class RegistroUsuario extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        setLayout(new BorderLayout());
 
-        // Panel con fondo azul suave
+        // Fondo con imagen
+        PanelConImagen fondo = new PanelConImagen("imagenes/fondoLOGIN.png");
+        fondo.setLayout(new BorderLayout());
+        setContentPane(fondo);
+
+        // Panel principal sobre el fondo
         JPanel panel = new JPanel();
-        panel.setBackground(new Color(200, 230, 255));
+        panel.setOpaque(false); // Hacemos el panel transparente
         panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        // Título
-        JLabel titulo = new JLabel("Crear Nueva Cuenta");
-        titulo.setFont(new Font("Arial Black", Font.BOLD, 24));
-        titulo.setForeground(new Color(30, 60, 90));
-        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // Logo en lugar del texto de título
+        ImageIcon logoIcon = new ImageIcon("imagenes/LOGOREGISTRO.png");
+        Image logoEscalado = logoIcon.getImage().getScaledInstance(190, 70, Image.SCALE_SMOOTH);
+        JLabel logoLabel = new JLabel(new ImageIcon(logoEscalado));
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(logoLabel);
+        panel.add(Box.createVerticalStrut(10));
 
-        panel.add(titulo);
-        panel.add(Box.createVerticalStrut(20));
 
         // Usuario
         JLabel lblUsuario = new JLabel("Usuario:");
         lblUsuario.setFont(new Font("Arial", Font.PLAIN, 16));
+        lblUsuario.setForeground(Color.BLACK);
         JTextField txtUsuario = new JTextField();
         txtUsuario.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
 
         // Contraseña
         JLabel lblPassword = new JLabel("Contraseña:");
         lblPassword.setFont(new Font("Arial", Font.PLAIN, 16));
+        lblPassword.setForeground(Color.BLACK);
         JPasswordField txtPassword = new JPasswordField();
         txtPassword.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
 
@@ -51,15 +74,14 @@ public class RegistroUsuario extends JFrame {
         panel.add(txtPassword);
         panel.add(Box.createVerticalStrut(25));
 
-        // Botones en un panel horizontal
+        // Panel de botones
         JPanel botonesPanel = new JPanel();
-        botonesPanel.setBackground(new Color(200, 230, 255));
+        botonesPanel.setOpaque(false);
         botonesPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
 
         JButton btnRegistrar = new JButton("Registrar");
         JButton btnCancelar = new JButton("Cancelar");
 
-        // Estilos botones
         Font btnFont = new Font("Arial", Font.BOLD, 16);
         btnRegistrar.setFont(btnFont);
         btnCancelar.setFont(btnFont);
@@ -76,7 +98,7 @@ public class RegistroUsuario extends JFrame {
         botonesPanel.add(btnCancelar);
 
         panel.add(botonesPanel);
-        add(panel, BorderLayout.CENTER);
+        fondo.add(panel, BorderLayout.CENTER);
 
         // Acciones
         btnRegistrar.addActionListener(e -> {
